@@ -1,0 +1,8 @@
+*.DS_Store
+
+# Android
+bin
+gen
+libs
+obj
+local.properties
