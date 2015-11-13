@@ -24,10 +24,10 @@
 ##
 
 # not compile corefundation library for android.
-# API/JSStringRefCF.cpp  
+# API/JSStringRefCF.cpp
 
 LOCAL_SRC_FILES := \
-    API/JSBase.cpp \
+	API/JSBase.cpp \
 	API/JSCallbackConstructor.cpp \
 	API/JSCallbackFunction.cpp \
 	API/JSCallbackObject.cpp \
@@ -220,6 +220,6 @@ LOCAL_SRC_FILES := \
 	yarr/YarrPattern.cpp \
 	yarr/YarrInterpreter.cpp \
 	yarr/YarrJIT.cpp \
-	yarr/YarrSyntaxChecker.cpp 
+	yarr/YarrSyntaxChecker.cpp
 
 LOCAL_LDLIBS := -llog -lm

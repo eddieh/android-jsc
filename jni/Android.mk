@@ -16,7 +16,9 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := jsctest
-LOCAL_SRC_FILES := jsctest.c
+subdirs := $(LOCAL_PATH)/jsctest/Android.mk \
+				   $(LOCAL_PATH)/icu/Android.mk \
+           $(LOCAL_PATH)/jsc/Source/JavaScriptCore/cutils/Android.mk \
+           $(LOCAL_PATH)/jsc/Android.mk
 
-include $(BUILD_SHARED_LIBRARY)
+include $(subdirs)

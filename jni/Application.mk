@@ -1,1 +1,7 @@
-APP_ABI := all
+APP_ABI := armeabi #all
+
+APP_STL := gnustl_static
+APP_OPTIM := release
+APP_CPPFLAGS := -frtti
+
+APP_MODULES := icuuc icui18n cutils js jsctest

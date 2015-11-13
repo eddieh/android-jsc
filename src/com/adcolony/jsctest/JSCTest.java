@@ -61,6 +61,7 @@ public class JSCTest extends Activity
      * installation time by the package manager.
      */
     static {
-        System.loadLibrary("jsctest");
+      System.loadLibrary("js");
+      System.loadLibrary("jsctest");
     }
 }
