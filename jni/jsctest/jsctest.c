@@ -54,6 +54,12 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJNI(JNIEnv* env, jobject self)
      return (*env)->NewStringUTF(env, "Hello from JNI!\nThis is JSCTest.\nCompiled with ABI " ABI ".");
 }
 
+/* This is a JNI/JSC example where we use a native method to return a
+ * new VM String that we get from executing a JavaScript fragment. See
+ * the corresponding Java source file located at:
+ *
+ *   src/com/adcolony/jsctest/JSCTest.java
+ */
 jstring
 Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
 {
