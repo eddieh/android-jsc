@@ -33,7 +33,7 @@ public class JSCTest extends Activity
          * function.
          */
         TextView tv = new TextView(this);
-        tv.setText(stringFromJNI());
+        tv.setText(stringFromJSC());
         setContentView(tv);
     }
 
@@ -42,6 +42,13 @@ public class JSCTest extends Activity
      * with this application.
      */
     public native String stringFromJNI();
+
+    /* A native method that is implemented by the
+     * 'jsctest' native library, which is packaged
+     * with this application. This one uses JSC to
+     * create a string.
+     */
+    public native String stringFromJSC();
 
     /* This is another native method declaration that is *not*
      * implemented by 'jsctest'. This is simply to show that

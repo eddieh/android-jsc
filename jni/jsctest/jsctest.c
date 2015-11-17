@@ -15,17 +15,15 @@
  *
  */
 #include <string.h>
+#include <stdio.h>
 #include <jni.h>
 
-/* This is a trivial JNI example where we use a native method
- * to return a new VM String. See the corresponding Java source
- * file located at:
- *
- *   src/com/adcolony/jsctest/JSCTest.java
- */
-jstring
-Java_com_adcolony_jsctest_JSCTest_stringFromJNI(JNIEnv* env, jobject thiz)
-{
+#include <android/log.h>
+
+#define APPNAME "JSCTest"
+
+#include <JavaScriptCore/JavaScriptCore.h>
+
 #if defined(__arm__)
   #if defined(__ARM_ARCH_7A__)
     #if defined(__ARM_NEON__)
@@ -44,5 +42,45 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJNI(JNIEnv* env, jobject thiz)
    #define ABI "unknown"
 #endif
 
-    return (*env)->NewStringUTF(env, "Hello from JNI!\nThis is JSCTest.\nCompiled with ABI " ABI ".");
+/* This is a trivial JNI example where we use a native method
+ * to return a new VM String. See the corresponding Java source
+ * file located at:
+ *
+ *   src/com/adcolony/jsctest/JSCTest.java
+ */
+jstring
+Java_com_adcolony_jsctest_JSCTest_stringFromJNI(JNIEnv* env, jobject self)
+{
+     return (*env)->NewStringUTF(env, "Hello from JNI!\nThis is JSCTest.\nCompiled with ABI " ABI ".");
+}
+
+jstring
+Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
+{
+     char scriptStr[] = "var main = function () { return 'Hello from JSC!\\n' }";
+     char jsValue[128];
+     JSValueRef exception;
+
+     JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
+     JSObjectRef jsGlobalObject = JSContextGetGlobalObject(ctx);
+
+     JSStringRef scriptJS = JSStringCreateWithUTF8CString(scriptStr);
+     //bool validScript = JSCheckScriptSyntax(ctx, scriptJS, NULL, 0, exception);
+     JSValueRef ret = JSEvaluateScript(ctx, scriptJS, NULL, NULL, 0, exception);
+     JSStringRelease(scriptJS);
+
+     JSStringRef nameJS = JSStringCreateWithUTF8CString("main");
+     //bool hasMain = JSObjectHasProperty(ctx, jsGlobalObject, nameJS);
+     JSObjectRef function = (JSObjectRef)JSObjectGetProperty(ctx, jsGlobalObject, nameJS, NULL);
+     JSStringRelease(nameJS);
+
+     JSValueRef args[] = {};
+     JSValueRef result = JSObjectCallAsFunction(ctx, function, NULL, 0, args, exception);
+     JSStringRef resultStr = JSValueToStringCopy(ctx, result, NULL);
+     JSStringGetUTF8CString(resultStr, jsValue, 128);
+     JSStringRelease(resultStr);
+
+     JSGlobalContextRelease(ctx);
+
+     return (*env)->NewStringUTF(env, jsValue);
 }

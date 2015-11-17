@@ -1,9 +1,36 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
+JAVASCRIPTCORE_PATH := $(LOCAL_PATH)/../jsc/Source/JavaScriptCore
+
+LOCAL_C_INCLUDES := $(LOCAL_C_INCLUDES) \
+	$(JAVASCRIPTCORE_PATH)/.. \
+	$(JAVASCRIPTCORE_PATH) \
+	$(JAVASCRIPTCORE_PATH)/include \
+	$(JAVASCRIPTCORE_PATH)/cutils \
+	$(JAVASCRIPTCORE_PATH)/API \
+	$(JAVASCRIPTCORE_PATH)/assembler \
+	$(JAVASCRIPTCORE_PATH)/bytecode \
+	$(JAVASCRIPTCORE_PATH)/bytecompiler \
+	$(JAVASCRIPTCORE_PATH)/debugger \
+	$(JAVASCRIPTCORE_PATH)/collector/handles \
+	$(JAVASCRIPTCORE_PATH)/heap \
+	$(JAVASCRIPTCORE_PATH)/wtf \
+	$(JAVASCRIPTCORE_PATH)/wtf/unicode \
+	$(JAVASCRIPTCORE_PATH)/wtf/unicode/icu \
+	$(LOCAL_PATH)/../icu/common \
+	$(LOCAL_PATH)/../icu/i18n \
+	$(JAVASCRIPTCORE_PATH)/parser \
+	$(JAVASCRIPTCORE_PATH)/interpreter \
+	$(JAVASCRIPTCORE_PATH)/jit \
+	$(JAVASCRIPTCORE_PATH)/profiler \
+	$(JAVASCRIPTCORE_PATH)/runtime
+
 LOCAL_MODULE    := libjsctest
 LOCAL_SRC_FILES := jsctest.c
 
 LOCAL_SHARED_LIBRARIES := libjs
+
+LOCAL_LDLIBS := -llog
 
 include $(BUILD_SHARED_LIBRARY)
