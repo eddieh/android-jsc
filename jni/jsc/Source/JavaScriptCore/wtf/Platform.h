@@ -42,7 +42,7 @@
 #define CPU(WTF_FEATURE) (defined WTF_CPU_##WTF_FEATURE  && WTF_CPU_##WTF_FEATURE)
 /* HAVE() - specific system features (headers, functions or similar) that are present or not */
 #define HAVE(WTF_FEATURE) (defined HAVE_##WTF_FEATURE  && HAVE_##WTF_FEATURE)
-/* OS() - underlying operating system; only to be used for mandated low-level services like 
+/* OS() - underlying operating system; only to be used for mandated low-level services like
    virtual memory, not to choose a GUI toolkit */
 #define OS(WTF_FEATURE) (defined WTF_OS_##WTF_FEATURE  && WTF_OS_##WTF_FEATURE)
 
@@ -327,7 +327,7 @@
 
 
 /* CPU(ARMV5_OR_LOWER) - ARM instruction set v5 or earlier */
-/* On ARMv5 and below the natural alignment is required. 
+/* On ARMv5 and below the natural alignment is required.
    And there are some other differences for v5 or earlier. */
 #if !defined(ARMV5_OR_LOWER) && !WTF_ARM_ARCH_AT_LEAST(6)
 #define WTF_CPU_ARMV5_OR_LOWER 1
@@ -362,7 +362,7 @@
 #define WTF_CPU_NEEDS_ALIGNED_ACCESS 1
 #endif
 
-/* ==== OS() - underlying operating system; only to be used for mandated low-level services like 
+/* ==== OS() - underlying operating system; only to be used for mandated low-level services like
    virtual memory, not to choose a GUI toolkit ==== */
 
 /* OS(ANDROID) - Android */
@@ -599,17 +599,19 @@
 
 #endif  /* OS(WINCE) && !PLATFORM(QT) */
 
-#if PLATFORM(QT)
-#define WTF_USE_QT4_UNICODE 1
-#elif OS(WINCE)
-#define WTF_USE_WINCE_UNICODE 1
-#elif PLATFORM(BREWMP)
-#define WTF_USE_BREWMP_UNICODE 1
-#elif PLATFORM(GTK)
-/* The GTK+ Unicode backend is configurable */
-#else
-#define WTF_USE_ICU_UNICODE 1
-#endif
+/* #if PLATFORM(QT) */
+/* #define WTF_USE_QT4_UNICODE 1 */
+/* #elif OS(WINCE) */
+/* #define WTF_USE_WINCE_UNICODE 1 */
+/* #elif PLATFORM(BREWMP) */
+/* #define WTF_USE_BREWMP_UNICODE 1 */
+/* #elif PLATFORM(GTK) */
+   // The GTK+ Unicode backend is configurable
+/* #else */
+/* #define WTF_USE_ICU_UNICODE 1 */
+/* #endif */
+
+#define WTF_USE_LIBC_UNICODE 1
 
 #if PLATFORM(MAC) && !PLATFORM(IOS)
 #if !defined(BUILDING_ON_LEOPARD) && !defined(BUILDING_ON_TIGER) && CPU(X86_64)
@@ -1298,7 +1300,7 @@
 #include "GTypedefs.h"
 #endif
 
-/* FIXME: This define won't be needed once #27551 is fully landed. However, 
+/* FIXME: This define won't be needed once #27551 is fully landed. However,
    since most ports try to support sub-project independence, adding new headers
    to WTF causes many ports to break, and so this way we can address the build
    breakages one port at a time. */

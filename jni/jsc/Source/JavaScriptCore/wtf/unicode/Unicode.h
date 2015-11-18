@@ -35,6 +35,8 @@
 #include <wtf/unicode/wince/UnicodeWinCE.h>
 #elif USE(BREWMP_UNICODE)
 #include <wtf/unicode/brew/UnicodeBrew.h>
+#elif USE(LIBC_UNICODE)
+#include <wtf/unicode/libc/UnicodeLibC.h>
 #else
 #error "Unknown Unicode implementation"
 #endif

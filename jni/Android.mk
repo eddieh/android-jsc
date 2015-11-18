@@ -17,7 +17,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 subdirs := $(LOCAL_PATH)/jsctest/Android.mk \
-				   $(LOCAL_PATH)/icu/Android.mk \
            $(LOCAL_PATH)/jsc/Source/JavaScriptCore/cutils/Android.mk \
            $(LOCAL_PATH)/jsc/Android.mk
 

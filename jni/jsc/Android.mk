@@ -58,9 +58,7 @@ LOCAL_C_INCLUDES := $(LOCAL_C_INCLUDES) \
 	$(JAVASCRIPTCORE_PATH)/heap \
 	$(JAVASCRIPTCORE_PATH)/wtf \
 	$(JAVASCRIPTCORE_PATH)/wtf/unicode \
-	$(JAVASCRIPTCORE_PATH)/wtf/unicode/icu \
-	$(BASE_PATH)/../icu/common \
-	$(BASE_PATH)/../icu/i18n \
+	$(JAVASCRIPTCORE_PATH)/wtf/unicode/libc \
 	$(JAVASCRIPTCORE_PATH)/parser \
 	$(JAVASCRIPTCORE_PATH)/interpreter \
 	$(JAVASCRIPTCORE_PATH)/jit \
@@ -92,5 +90,5 @@ LOCAL_C_INCLUDES := $(LOCAL_C_INCLUDES) \
 	$(intermediates)/runtime \
 
 # Build libjs
-LOCAL_STATIC_LIBRARIES := libicui18n libicuuc libcutils
+LOCAL_STATIC_LIBRARIES := libcutils
 include $(BUILD_SHARED_LIBRARY)
