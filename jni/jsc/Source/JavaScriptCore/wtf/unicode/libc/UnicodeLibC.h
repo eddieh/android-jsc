@@ -28,6 +28,7 @@
 #include "UnicodeMacrosFromICU.h"
 
 #include <wtf/ASCIICType.h>
+#include <assert.h>
 
 typedef uint16_t UChar;
 typedef int32_t UChar32;
