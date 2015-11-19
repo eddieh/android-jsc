@@ -599,18 +599,7 @@
 
 #endif  /* OS(WINCE) && !PLATFORM(QT) */
 
-/* #if PLATFORM(QT) */
-/* #define WTF_USE_QT4_UNICODE 1 */
-/* #elif OS(WINCE) */
-/* #define WTF_USE_WINCE_UNICODE 1 */
-/* #elif PLATFORM(BREWMP) */
-/* #define WTF_USE_BREWMP_UNICODE 1 */
-/* #elif PLATFORM(GTK) */
-   // The GTK+ Unicode backend is configurable
-/* #else */
-/* #define WTF_USE_ICU_UNICODE 1 */
-/* #endif */
-
+/* The only Unicode backend we support is libc */
 #define WTF_USE_LIBC_UNICODE 1
 
 #if PLATFORM(MAC) && !PLATFORM(IOS)
