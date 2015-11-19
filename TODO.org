@@ -1,5 +1,5 @@
 * DONE delete icu directory
-* TODO create a README.md
-* TODO create an ACKNOWLEDGMENTS
-* TODO add LICENSE or NOTICE or whatever
-* TODO add Makefile
+* DONE create a README.md
+* DONE create an ACKNOWLEDGMENTS
+* TODO add LICENSE or NOTICE
+* DONE add Makefile
