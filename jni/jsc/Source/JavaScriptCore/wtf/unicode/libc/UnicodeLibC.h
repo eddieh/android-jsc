@@ -29,6 +29,7 @@
 
 #include <wtf/ASCIICType.h>
 #include <assert.h>
+#include <wctype.h>
 
 typedef uint16_t UChar;
 typedef int32_t UChar32;
@@ -115,22 +116,12 @@ enum CharCategory {
 
 inline UChar32 foldCase(UChar32 c)
 {
-    return c;
+    return towlower(c);
 }
 
 inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
     return 0;
-}
-
-inline int toLower(uint16_t *str, int strLength, uint16_t *&destIfNeeded)
-{
-    destIfNeeded = 0;
-
-    for (int i = 0; i < strLength; ++i)
-        str[i] = toASCIILower(str[i]);
-
-    return strLength;
 }
 
 inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
@@ -140,22 +131,12 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
 
 inline UChar32 toLower(UChar32 c)
 {
-    return c;
-}
-
-inline int toUpper(uint16_t *str, int strLength, uint16_t *&destIfNeeded)
-{
-    destIfNeeded = 0;
-
-    for (int i = 0; i < strLength; ++i)
-        str[i] = toASCIIUpper(str[i]);
-
-    return strLength;
+    return towlower(c);
 }
 
 inline UChar32 toUpper(UChar32 c)
 {
-    return c;
+    return towupper(c);
 }
 
 inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
@@ -170,12 +151,12 @@ inline UChar32 toTitleCase(UChar32 c)
 
 inline bool isArabicChar(UChar32 c)
 {
-    return false;
+    return c >= 0x0600 && c <= 0x06FF;
 }
 
 inline bool isAlphanumeric(UChar32 c)
 {
-    return false;
+    return !!iswalnum(c);
 }
 
 inline bool isSeparatorSpace(int32_t c)
@@ -185,12 +166,12 @@ inline bool isSeparatorSpace(int32_t c)
 
 inline bool isPrintableChar(UChar32 c)
 {
-    return false;
+    return !!iswprint(c);
 }
 
 inline bool isPunct(UChar32 c)
 {
-    return false;
+    return !!iswpunct(c);
 }
 
 inline bool hasLineBreakingPropertyComplexContext(UChar32 c)
@@ -308,7 +289,7 @@ inline Direction direction(UChar32 c)
 
 inline bool isLower(UChar32 c)
 {
-    return false;
+    return !!iswlower(c);
 }
 
 inline uint8_t combiningClass(UChar32 c)

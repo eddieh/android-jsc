@@ -6,22 +6,22 @@
 * DONE organize UnicodeLibC.h like UnicodeICU.h
 * TODO implement each of the following functions
   e.g. use towlower, also include #include <wctype.h>
-** TODO foldCase 1
+** DONE foldCase 1
 ** TODO foldCase 2
-** TODO toLower 1
+** DONE toLower 1
 ** TODO toLower 2
-** TODO toUpper 1
+** DONE toUpper 1
 ** TODO toUpper 2
 ** TODO toTitleCase
-** TODO isArabicChar
-** TODO isAlphanumeric
-** TODO isPrintableChar
-** TODO isPunct
+** DONE isArabicChar
+** DONE isAlphanumeric
+** DONE isPrintableChar
+** DONE isPunct
 ** TODO hasLineBreakingPropertyComplexContext
 ** TODO hasLineBreakingPropertyComplexContextOrIdeographic
 ** TODO mirroredChar
 ** TODO direction
-** TODO isLower
+** DONE isLower
 ** TODO combiningClass
 ** TODO decompositionType
 ** TODO umemcasecmp
