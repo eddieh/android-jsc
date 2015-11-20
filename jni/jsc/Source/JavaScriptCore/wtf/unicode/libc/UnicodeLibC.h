@@ -113,6 +113,16 @@ enum CharCategory {
     Symbol_Other = 0x20000000
 };
 
+inline UChar32 foldCase(UChar32 c)
+{
+    return c;
+}
+
+inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
+{
+    return 0;
+}
+
 inline int toLower(uint16_t *str, int strLength, uint16_t *&destIfNeeded)
 {
     destIfNeeded = 0;
@@ -121,6 +131,16 @@ inline int toLower(uint16_t *str, int strLength, uint16_t *&destIfNeeded)
         str[i] = toASCIILower(str[i]);
 
     return strLength;
+}
+
+inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
+{
+    return 0;
+}
+
+inline UChar32 toLower(UChar32 c)
+{
+    return c;
 }
 
 inline int toUpper(uint16_t *str, int strLength, uint16_t *&destIfNeeded)
@@ -133,11 +153,60 @@ inline int toUpper(uint16_t *str, int strLength, uint16_t *&destIfNeeded)
     return strLength;
 }
 
+inline UChar32 toUpper(UChar32 c)
+{
+    return c;
+}
+
+inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
+{
+    return 0;
+}
+
+inline UChar32 toTitleCase(UChar32 c)
+{
+    return c;
+}
+
+inline bool isArabicChar(UChar32 c)
+{
+    return false;
+}
+
+inline bool isAlphanumeric(UChar32 c)
+{
+    return false;
+}
+
 inline bool isSeparatorSpace(int32_t c)
 {
     return !(c & 0xffff0000) && isASCIISpace(static_cast<unsigned short>(c));
 }
 
+inline bool isPrintableChar(UChar32 c)
+{
+    return false;
+}
+
+inline bool isPunct(UChar32 c)
+{
+    return false;
+}
+
+inline bool hasLineBreakingPropertyComplexContext(UChar32 c)
+{
+    return false;
+}
+
+inline bool hasLineBreakingPropertyComplexContextOrIdeographic(UChar32 c)
+{
+    return false;
+}
+
+inline UChar32 mirroredChar(UChar32 c)
+{
+    return c;
+}
 inline CharCategory category(int32_t c)
 {
     if (c < 0)
@@ -230,76 +299,6 @@ inline CharCategory category(int32_t c)
 
     // FIXME: implement for the rest ...
     return NoCategory;
-}
-
-inline UChar32 foldCase(UChar32 c)
-{
-    return c;
-}
-
-inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
-{
-    return 0;
-}
-
-inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
-{
-    return 0;
-}
-
-inline UChar32 toLower(UChar32 c)
-{
-    return c;
-}
-
-inline UChar32 toUpper(UChar32 c)
-{
-    return c;
-}
-
-inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
-{
-    return 0;
-}
-
-inline UChar32 toTitleCase(UChar32 c)
-{
-    return c;
-}
-
-inline bool isArabicChar(UChar32 c)
-{
-    return false;
-}
-
-inline bool isAlphanumeric(UChar32 c)
-{
-    return false;
-}
-
-inline bool isPrintableChar(UChar32 c)
-{
-    return false;
-}
-
-inline bool isPunct(UChar32 c)
-{
-    return false;
-}
-
-inline bool hasLineBreakingPropertyComplexContext(UChar32 c)
-{
-    return false;
-}
-
-inline bool hasLineBreakingPropertyComplexContextOrIdeographic(UChar32 c)
-{
-    return false;
-}
-
-inline UChar32 mirroredChar(UChar32 c)
-{
-    return c;
 }
 
 inline Direction direction(UChar32 c)
