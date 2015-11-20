@@ -121,12 +121,38 @@ inline UChar32 foldCase(UChar32 c)
 
 inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
-    return 0;
+    *error = false;
+    if (resultLength < srcLength) {
+        *error = true;
+        return srcLength;
+    }
+    for (int i = 0; i < srcLength; ++i)
+        result[i] = foldCase(src[i]);
+    return srcLength;
 }
 
 inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
-    return 0;
+    const UChar* srcIterator = src;
+    const UChar* srcEnd = src + srcLength;
+    UChar* resultIterator = result;
+    UChar* resultEnd = result + resultLength;
+
+    int remainingCharacters = 0;
+    if (srcLength <= resultLength)
+        while (srcIterator < srcEnd)
+            *resultIterator++ = towlower(*srcIterator++);
+    else
+        while (resultIterator < resultEnd)
+            *resultIterator++ = towlower(*srcIterator++);
+
+    if (srcIterator < srcEnd)
+        remainingCharacters += srcEnd - srcIterator;
+    *error = !!remainingCharacters;
+    if (resultIterator < resultEnd)
+        *resultIterator = 0;
+
+    return (resultIterator - result) + remainingCharacters;
 }
 
 inline UChar32 toLower(UChar32 c)
@@ -141,7 +167,26 @@ inline UChar32 toUpper(UChar32 c)
 
 inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
-    return 0;
+    const UChar* srcIterator = src;
+    const UChar* srcEnd = src + srcLength;
+    UChar* resultIterator = result;
+    UChar* resultEnd = result + resultLength;
+
+    int remainingCharacters = 0;
+    if (srcLength <= resultLength)
+        while (srcIterator < srcEnd)
+            *resultIterator++ = towupper(*srcIterator++);
+    else
+        while (resultIterator < resultEnd)
+            *resultIterator++ = towupper(*srcIterator++);
+
+    if (srcIterator < srcEnd)
+        remainingCharacters += srcEnd - srcIterator;
+    *error = !!remainingCharacters;
+    if (resultIterator < resultEnd)
+        *resultIterator = 0;
+
+    return (resultIterator - result) + remainingCharacters;
 }
 
 inline UChar32 toTitleCase(UChar32 c)
@@ -188,6 +233,7 @@ inline UChar32 mirroredChar(UChar32 c)
 {
     return c;
 }
+
 inline CharCategory category(int32_t c)
 {
     if (c < 0)
@@ -304,6 +350,12 @@ inline DecompositionType decompositionType(UChar32 c)
 
 inline int umemcasecmp(const UChar* a, const UChar* b, int len)
 {
+    for (int i = 0; i < len; ++i) {
+        UChar c1 = foldCase(a[i]);
+        UChar c2 = foldCase(b[i]);
+        if (c1 != c2)
+            return c1 - c2;
+    }
     return 0;
 }
 

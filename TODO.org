@@ -7,11 +7,11 @@
 * TODO implement each of the following functions
   e.g. use towlower, also include #include <wctype.h>
 ** DONE foldCase 1
-** TODO foldCase 2
+** DONE foldCase 2
 ** DONE toLower 1
-** TODO toLower 2
+** DONE toLower 2
 ** DONE toUpper 1
-** TODO toUpper 2
+** DONE toUpper 2
 ** TODO toTitleCase
 ** DONE isArabicChar
 ** DONE isAlphanumeric
@@ -24,7 +24,7 @@
 ** DONE isLower
 ** TODO combiningClass
 ** TODO decompositionType
-** TODO umemcasecmp
+** DONE umemcasecmp
 * TODO move large functions to UnicodeLibC.cpp
 * TODO create test suite for string manipulations
 * TODO upgrade JSC to a more recent version
