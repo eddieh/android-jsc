@@ -6,7 +6,7 @@ embedded. This project aims to create a minimalist variant of
 JavaScriptCore that can be embedded in an app without significantly
 increasing the app size.
 
-Currently our variant of JavaScriptCore is 738KB.
+Currently our variant of JavaScriptCore is 742KB.
 
 
 ## Quick Start
