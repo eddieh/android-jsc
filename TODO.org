@@ -1,3 +1,5 @@
+GitHub renders this wrong — use raw view on GH ><
+
 * DONE delete icu directory
 * DONE create a README.md
 * DONE create an ACKNOWLEDGMENTS
