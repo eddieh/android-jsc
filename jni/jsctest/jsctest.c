@@ -72,7 +72,7 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
 
      JSStringRef scriptJS = JSStringCreateWithUTF8CString(scriptStr);
      //bool validScript = JSCheckScriptSyntax(ctx, scriptJS, NULL, 0, exception);
-     JSValueRef ret = JSEvaluateScript(ctx, scriptJS, NULL, NULL, 0, exception);
+     JSValueRef ret = JSEvaluateScript(ctx, scriptJS, NULL, NULL, 0, &exception);
      JSStringRelease(scriptJS);
 
      JSStringRef nameJS = JSStringCreateWithUTF8CString("main");
@@ -81,7 +81,7 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
      JSStringRelease(nameJS);
 
      JSValueRef args[] = {};
-     JSValueRef result = JSObjectCallAsFunction(ctx, function, NULL, 0, args, exception);
+     JSValueRef result = JSObjectCallAsFunction(ctx, function, NULL, 0, args, &exception);
      JSStringRef resultStr = JSValueToStringCopy(ctx, result, NULL);
      JSStringGetUTF8CString(resultStr, jsValue, 128);
      JSStringRelease(resultStr);

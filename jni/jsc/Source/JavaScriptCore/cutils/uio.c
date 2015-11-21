@@ -26,9 +26,9 @@ int  readv( int  fd, struct iovec*  vecs, int  count )
     for ( ; count > 0; count--, vecs++ ) {
         const char*  buf = vecs->iov_base;
         int          len = vecs->iov_len;
-        
+
         while (len > 0) {
-            int  ret = read( fd, buf, len );
+             int  ret = read( fd, (void*)buf, len );
             if (ret < 0) {
                 if (total == 0)
                     total = -1;
@@ -53,7 +53,7 @@ int  writev( int  fd, const struct iovec*  vecs, int  count )
     for ( ; count > 0; count--, vecs++ ) {
         const char*  buf = (const char*)vecs->iov_base;
         int          len = (int)vecs->iov_len;
-        
+
         while (len > 0) {
             int  ret = write( fd, buf, len );
             if (ret < 0) {
@@ -69,7 +69,7 @@ int  writev( int  fd, const struct iovec*  vecs, int  count )
             len   -= ret;
         }
     }
-Exit:    
+Exit:
     return total;
 }
 

@@ -89,6 +89,6 @@ LOCAL_C_INCLUDES := $(LOCAL_C_INCLUDES) \
     $(LOCAL_PATH)/..
 
 LOCAL_SRC_FILES := $(commonSources) $(commonHostSources) dlmalloc_stubs.c
-LOCAL_LDLIBS := -llog
 LOCAL_CFLAGS += $(hostSmpFlag) -DHAVE_PTHREADS
+
 include $(BUILD_STATIC_LIBRARY)
