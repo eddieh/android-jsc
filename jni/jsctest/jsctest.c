@@ -21,6 +21,7 @@
 #include <android/log.h>
 
 #define APPNAME "JSCTest"
+#define log(...) __android_log_print(ANDROID_LOG_ERROR, APPNAME, __VA_ARGS__)
 
 #include <JavaScriptCore/JavaScriptCore.h>
 
@@ -65,17 +66,26 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
 {
      char scriptStr[] = "var main = function () { return 'Hello from JSC!\\n' }";
      char jsValue[128];
+
+     evaluateScript(scriptStr, "main", jsValue);
+
+     return (*env)->NewStringUTF(env, jsValue);
+}
+
+void
+evaluateScript(const char *src, const char *entryFn, char *retStr)
+{
      JSValueRef exception;
 
      JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
      JSObjectRef jsGlobalObject = JSContextGetGlobalObject(ctx);
 
-     JSStringRef scriptJS = JSStringCreateWithUTF8CString(scriptStr);
+     JSStringRef scriptJS = JSStringCreateWithUTF8CString(src);
      //bool validScript = JSCheckScriptSyntax(ctx, scriptJS, NULL, 0, exception);
      JSValueRef ret = JSEvaluateScript(ctx, scriptJS, NULL, NULL, 0, &exception);
      JSStringRelease(scriptJS);
 
-     JSStringRef nameJS = JSStringCreateWithUTF8CString("main");
+     JSStringRef nameJS = JSStringCreateWithUTF8CString(entryFn);
      //bool hasMain = JSObjectHasProperty(ctx, jsGlobalObject, nameJS);
      JSObjectRef function = (JSObjectRef)JSObjectGetProperty(ctx, jsGlobalObject, nameJS, NULL);
      JSStringRelease(nameJS);
@@ -83,10 +93,19 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
      JSValueRef args[] = {};
      JSValueRef result = JSObjectCallAsFunction(ctx, function, NULL, 0, args, &exception);
      JSStringRef resultStr = JSValueToStringCopy(ctx, result, NULL);
-     JSStringGetUTF8CString(resultStr, jsValue, 128);
+     JSStringGetUTF8CString(resultStr, retStr, 128);
      JSStringRelease(resultStr);
 
      JSGlobalContextRelease(ctx);
+}
 
-     return (*env)->NewStringUTF(env, jsValue);
+jstring
+Java_com_adcolony_jsctest_JSCTest_runTest(JNIEnv *env, jobject self, jbyteArray src)
+{
+     unsigned char *csrc = (unsigned char*)(*env)->GetByteArrayElements(env, src, NULL);
+     char retValue[128];
+
+     evaluateScript(csrc, "test", retValue);
+
+     return (*env)->NewStringUTF(env, retValue);
 }
