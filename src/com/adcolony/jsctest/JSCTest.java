@@ -58,26 +58,38 @@ public class JSCTest extends Activity
 
         // TODO: cumulative pass/fail count
         // NOTE: results cannot begin or end with white space
+        String[] assets = null;
         try {
-          String[] assets = this.getAssets().list("");
-
-          // filter the list
-          List<String> tests = new ArrayList<String>();
-          for (String file : assets) {
+            assets = this.getAssets().list("");
+        } catch (IOException e) {
+            Log.e("JSCTest", "Could load list of assets");
+            return;
+        }
+        
+        // filter the list
+        List<String> tests = new ArrayList<String>();
+        for (String file : assets) {
             if (file.endsWith(".js")) tests.add(file);
-          }
+        }
 
-          String str = "";
-          for (String testFile : tests) {
-            // read the test.js
+        String str = "";
+        for (String testFile : tests) {
+            // read the test.js file
             byte[] testScript = this.loadAsset(testFile);
 
             // drop .js and add .expected from filename
             String expectedFile = testFile.replaceAll(".js", "");
             expectedFile = expectedFile += ".expected";
 
-            // read the test.expected
-            String expectedResults = (new String(this.loadAsset(expectedFile), "UTF-8")).trim();
+            // read the test.expected file
+            String expected = "";
+            try {
+                expected = new String(this.loadAsset(expectedFile), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                Log.e("JSCTest", "UTF-8 coding isn't supported, yeah right!");
+                return;
+            }
+            String expectedResults = expected.trim();
 
             // run the test
             String testResults = this.runTest(testScript).trim();
@@ -87,15 +99,13 @@ public class JSCTest extends Activity
 
             // compare the actual result with the expected result
             if (testResults.equals(expectedResults)) {
-              str += testFile += " PASS\n";
+                str += testFile += " PASS\n";
             } else {
-              str += testFile += " FAIL\n";
+                str += testFile += " FAIL\n";
             }
-          }
+        }
 
-          tv.setText(str);
-        } catch (IOException e) {}
-
+        tv.setText(str);
         this.setContentView(tv);
     }
 
@@ -120,7 +130,7 @@ public class JSCTest extends Activity
      * installation time by the package manager.
      */
     static {
-      System.loadLibrary("js");
-      System.loadLibrary("jsctest");
+        System.loadLibrary("js");
+        System.loadLibrary("jsctest");
     }
 }
