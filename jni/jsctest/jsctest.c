@@ -75,7 +75,6 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
 void
 evaluateScript(const char *src, const char *entryFn, char *retStr)
 {
-     log(">>> %s", src);
      JSValueRef exception;
 
      JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
