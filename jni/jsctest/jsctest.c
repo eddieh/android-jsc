@@ -75,6 +75,7 @@ Java_com_adcolony_jsctest_JSCTest_stringFromJSC(JNIEnv *env, jobject self)
 void
 evaluateScript(const char *src, const char *entryFn, char *retStr)
 {
+     log(">>> %s", src);
      JSValueRef exception;
 
      JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
@@ -102,9 +103,11 @@ evaluateScript(const char *src, const char *entryFn, char *retStr)
 jstring
 Java_com_adcolony_jsctest_JSCTest_runTest(JNIEnv *env, jobject self, jbyteArray src)
 {
-     unsigned char *csrc = (unsigned char*)(*env)->GetByteArrayElements(env, src, NULL);
+     char *csrc = (char *)(*env)->GetByteArrayElements(env, src, NULL);
+     jsize clen = (*env)->GetArrayLength(env, src);
      char retValue[128];
 
+     csrc[clen] = '\0';
      evaluateScript(csrc, "test", retValue);
 
      return (*env)->NewStringUTF(env, retValue);
