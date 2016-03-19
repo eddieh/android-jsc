@@ -25,6 +25,9 @@ code_point_count = 0
 upper_case_count = 0
 lower_case_count = 0
 
+upper_table = {}
+lower_table = {}
+
 with open('UnicodeData.txt', 'r') as ucdata:
     # skip ASCII
     for _ in xrange(127):
@@ -35,20 +38,34 @@ with open('UnicodeData.txt', 'r') as ucdata:
 
         code_point_count += 1
 
+        value = int(props[UnicodeDataField.Value], 16)
+
+        # VERIFY: only 16-bit support needed??? That's what Duktape says...
+        if value >= 0x10000:
+            surrogate = value - 0x10000
+            high_surrogate = 0xD800 + (surrogate >> 10)
+            low_surrogate = 0xDC00 + (surrogate & 0x3FF)
+
+            #print 'Surrogate ' + str(value) + ' =  ' + str(high_surrogate) + ' & ' + str(low_surrogate)
+
+            continue
+
         if not props[UnicodeDataField.UpperCase] == '':
             upper_case_count += 1
-            #print props[UnicodeDataField.Value] + u' → ' + props[UnicodeDataField.UpperCase]
-
-            #print int(props[UnicodeDataField.Value], 16)
-            print props[UnicodeDataField.Value]
+            uvalue = int(props[UnicodeDataField.UpperCase], 16)
+            upper_table[value] = uvalue
 
         if not props[UnicodeDataField.LowerCase] == '':
             lower_case_count += 1
-            #print props[UnicodeDataField.Value] + u' → ' + props[UnicodeDataField.LowerCase]
-
-            #print int(props[UnicodeDataField.Value], 16)
-            print props[UnicodeDataField.Value]
+            lvalue = int(props[UnicodeDataField.LowerCase], 16)
+            lower_table[value] = lvalue
 
 # print code_point_count
-# print upper_case_count
-# print lower_case_count
+print upper_case_count
+print lower_case_count
+
+# for key in sorted(upper_table.keys()):
+#     print str(key) + u' u→ ' + str(upper_table[key])
+
+# for key in sorted(lower_table.keys()):
+#     print str(key) + u' l→ ' + str(lower_table[key])
