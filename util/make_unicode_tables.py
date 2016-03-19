@@ -52,13 +52,11 @@ with open('UnicodeData.txt', 'r') as ucdata:
 
         if not props[UnicodeDataField.UpperCase] == '':
             upper_case_count += 1
-            uvalue = int(props[UnicodeDataField.UpperCase], 16)
-            upper_table[value] = uvalue
+            upper_table[value] = int(props[UnicodeDataField.UpperCase], 16)
 
         if not props[UnicodeDataField.LowerCase] == '':
             lower_case_count += 1
-            lvalue = int(props[UnicodeDataField.LowerCase], 16)
-            lower_table[value] = lvalue
+            lower_table[value] = int(props[UnicodeDataField.LowerCase], 16)
 
 # print code_point_count
 print upper_case_count
