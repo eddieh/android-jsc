@@ -62,8 +62,24 @@ with open('UnicodeData.txt', 'r') as ucdata:
 print upper_case_count
 print lower_case_count
 
-# for key in sorted(upper_table.keys()):
-#     print str(key) + u' u→ ' + str(upper_table[key])
+flat_upper_table = []
+for key in sorted(upper_table.keys()):
+    #print str(key) + u' u→ ' + str(upper_table[key])
 
-# for key in sorted(lower_table.keys()):
-#     print str(key) + u' l→ ' + str(lower_table[key])
+    # combine both 16bit lower case and upper case values into a
+    # single 32 bit value
+    packed = (key << 16) | upper_table[key]
+    flat_upper_table.append(packed)
+
+# build C array and output it to a header file
+
+flat_lower_table = []
+for key in sorted(lower_table.keys()):
+    #print str(key) + u' l→ ' + str(lower_table[key])
+
+    # combine both 16bit upper case and lower case values into a
+    # single 32 bit value
+    packed = (key << 16) | lower_table[key]
+    flat_lower_table.append(packed)
+
+# build C array and output it to a header file
