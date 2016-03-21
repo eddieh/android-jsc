@@ -26,6 +26,7 @@
 #define WTF_UnicodeLibC_h
 
 #include "UnicodeMacrosFromICU.h"
+#include "UnicodeTables.h"
 
 #include <wtf/ASCIICType.h>
 #include <assert.h>

@@ -213,6 +213,8 @@ LOCAL_SRC_FILES := \
 	\
 	wtf/unicode/icu/CollatorICU.cpp \
 	\
+	wtf/unicode/libc/UnicodeTables.cpp \
+	\
 	wtf/url/src/URLCharacterTypes.cpp \
 	wtf/url/src/URLEscape.cpp \
 	wtf/url/src/URLSegments.cpp \
