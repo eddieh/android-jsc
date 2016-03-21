@@ -71,8 +71,6 @@ for key in sorted(upper_table.keys()):
     packed = (key << 16) | upper_table[key]
     flat_upper_table.append(packed)
 
-# build C array and output it to a header file
-
 flat_lower_table = []
 for key in sorted(lower_table.keys()):
     #print str(key) + u' l→ ' + str(lower_table[key])
@@ -82,4 +80,24 @@ for key in sorted(lower_table.keys()):
     packed = (key << 16) | lower_table[key]
     flat_lower_table.append(packed)
 
+
+import sys
+emit = sys.stdout.write
+
 # build C array and output it to a header file
+value_count_per_line = 0
+emit('uint32_t UpperTable[' + str(upper_case_count) + '] = {\n')
+for i, value in enumerate(flat_upper_table):
+    if value_count_per_line == 0:
+        emit('    ' + str(value) + 'u')
+    elif value_count_per_line < 5:
+        emit(', ' + str(value) + 'u')
+    else:
+        emit(', ' + str(value) + 'u')
+        if i < upper_case_count:
+            emit(',\n')
+        value_count_per_line = 0
+        continue
+
+    value_count_per_line += 1
+emit('\n};\n')
