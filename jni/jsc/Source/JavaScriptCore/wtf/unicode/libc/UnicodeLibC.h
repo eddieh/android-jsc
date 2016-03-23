@@ -166,8 +166,47 @@ inline UChar32 toUpper(UChar32 c)
     return towupper(c);
 }
 
+#include <android/log.h>
+
+#define APPTAG "ULIBC"
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, APPTAG, __VA_ARGS__)
+
+inline UChar convertToUpper(UChar c)
+{
+    for (int i = 0; i < 865; i++)
+        if (c == (UpperTable[i] >> 16))
+            return UpperTable[i] & 0x0000FFFF;
+
+    return c;
+}
+
+// This is called from stringProtoFuncToUpperCase in
+// runtime/StringPrototype.cpp
+//
+// If the string contains non-ASCII 1-1 case mapping the conversion to
+// upper case is easy, just iterate over the string and replace each
+// uppercaseable character with its uppercase equivalent.
+//
+// If the string contains non-ASCII 1-n case mappings the conversion
+// is a bit odd. Convert every 1-1 case mapping and keep track of the
+// needed space for the 1-n case mappings. Set error to true and
+// return the total needed size. The caller will then resize the
+// `result` buffer and will call this function again with the resized
+// buffer and previously returned length. The conversion then scans
+// the entire string again making the 1-n conversions along with 1-1
+// conversions.
 inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
+    for (int i = 0; i < resultLength; i++)
+        LOGE("result: %d", result[i]);
+
+    LOGE("rlen: %d", resultLength);
+
+    for (int i = 0; i < srcLength; i++)
+        LOGE("src: %d", src[i]);
+
+    LOGE("slen: %d", srcLength);
+
     const UChar* srcIterator = src;
     const UChar* srcEnd = src + srcLength;
     UChar* resultIterator = result;
@@ -176,10 +215,10 @@ inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLen
     int remainingCharacters = 0;
     if (srcLength <= resultLength)
         while (srcIterator < srcEnd)
-            *resultIterator++ = towupper(*srcIterator++);
+            *resultIterator++ = convertToUpper(*srcIterator++);
     else
         while (resultIterator < resultEnd)
-            *resultIterator++ = towupper(*srcIterator++);
+            *resultIterator++ = convertToUpper(*srcIterator++);
 
     if (srcIterator < srcEnd)
         remainingCharacters += srcEnd - srcIterator;
