@@ -34,6 +34,18 @@ namespace Unicode {
 
 extern uint32_t UpperTable[865];
 
+struct SpecialProperties {
+    uint16_t codePoint;
+    char lowerLength;
+    char titleLength;
+    char upperLength;
+    uint16_t lowerCase[3];
+    uint16_t titleCase[3];
+    uint16_t upperCase[3];
+};
+
+extern SpecialProperties SpecialCasing[1];
+
 } }
 
 #endif // WTF_UnicodeTables_h

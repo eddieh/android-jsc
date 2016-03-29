@@ -27,6 +27,7 @@
  */
 
 #include "config.h"
+#include "UnicodeTables.h"
 
 #if USE(LIBC_UNICODE)
 
@@ -179,6 +180,10 @@ uint32_t UpperTable[865] = {
     4283367214u, 4283432751u, 4283498288u, 4283563825u, 4283629362u, 4283694899u,
     4283760436u, 4283825973u, 4283891510u, 4283957047u, 4284022584u, 4284088121u,
     4284153658u
+};
+
+SpecialProperties SpecialCasing[1] = {
+    { 0x00DF, 1, 2, 2, { 0x00DF }, { 0x0053, 0x0073 }, { 0x0053, 0x0053 } }
 };
 
 } }

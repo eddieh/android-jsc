@@ -4,6 +4,9 @@
 # read from the unicode data and constuct unicode tables
 #
 
+import sys
+emit = sys.stdout.write
+
 class UnicodeDataField():
     Value = 0
     Name = 1
@@ -21,6 +24,13 @@ class UnicodeDataField():
     LowerCase = 13
     TitleCase = 14
 
+class SpecialCasingField():
+    Code = 0
+    LowerCase = 1
+    TitleCase = 2
+    UpperCase = 3
+    ConditionList = 4
+
 code_point_count = 0
 upper_case_count = 0
 lower_case_count = 0
@@ -28,6 +38,9 @@ lower_case_count = 0
 upper_table = {}
 lower_table = {}
 
+# =============================================================================
+# Unicode Data
+# =============================================================================
 with open('UnicodeData.txt', 'r') as ucdata:
     # skip ASCII
     for _ in xrange(127):
@@ -80,24 +93,61 @@ for key in sorted(lower_table.keys()):
     packed = (key << 16) | lower_table[key]
     flat_lower_table.append(packed)
 
-
-import sys
-emit = sys.stdout.write
-
 # build C array and output it to a header file
-value_count_per_line = 0
-emit('uint32_t UpperTable[' + str(upper_case_count) + '] = {\n')
-for i, value in enumerate(flat_upper_table):
-    if value_count_per_line == 0:
-        emit('    ' + str(value) + 'u')
-    elif value_count_per_line < 5:
-        emit(', ' + str(value) + 'u')
-    else:
-        emit(', ' + str(value) + 'u')
-        if i < upper_case_count:
-            emit(',\n')
-        value_count_per_line = 0
-        continue
+def emit_upper_table():
+    value_count_per_line = 0
+    emit('uint32_t UpperTable[' + str(upper_case_count) + '] = {\n')
+    for i, value in enumerate(flat_upper_table):
+        if value_count_per_line == 0:
+            emit('    ' + str(value) + 'u')
+        elif value_count_per_line < 5:
+            emit(', ' + str(value) + 'u')
+        else:
+            emit(', ' + str(value) + 'u')
+            if i < upper_case_count:
+                emit(',\n')
+                value_count_per_line = 0
+            continue
 
-    value_count_per_line += 1
-emit('\n};\n')
+        value_count_per_line += 1
+        emit('\n};\n')
+
+#emit_upper_table()
+
+# =============================================================================
+# Special Casing
+# =============================================================================
+
+special_casing = []
+max_n = 0
+
+with open('SpecialCasing.txt', 'r') as ucdata:
+
+    for line in ucdata:
+        # skip comments & blank lines
+        if line[0] == '#' or line[0] == '\n':
+            continue
+
+        props = line.split(';')
+
+        # we only care about non-conditionals
+        if len(props) == 5:
+            title_case = props[SpecialCasingField.TitleCase].strip().split(' ')
+            if len(title_case) > max_n:
+                max_n = len(title_case)
+
+            upper_case = props[SpecialCasingField.UpperCase].strip().split(' ')
+            if len(upper_case) > max_n:
+                max_n = len(upper_case)
+
+            special_casing.append({
+                'codePoint': props[SpecialCasingField.Code].strip(),
+                'lowerCase': props[SpecialCasingField.LowerCase].strip().split(' '),
+                'titleCase': title_case,
+                'upperCase': upper_case
+            })
+
+print max_n
+
+for s in special_casing:
+    print s
