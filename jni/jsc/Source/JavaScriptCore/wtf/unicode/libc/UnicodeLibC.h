@@ -183,8 +183,8 @@ inline UChar convertToUpper(UChar c)
 inline SpecialProperties specialCasingRule(UChar c)
 {
     for (int i = 0; i < 1; i++)
-        if (c == SpecialCasing[i].codePoint)
-            return SpecialCasing[i];
+        if (c == SpecialCasingTable[i].codePoint)
+            return SpecialCasingTable[i];
 
     return (SpecialProperties){ 0, 0, 0, 0 };
 }

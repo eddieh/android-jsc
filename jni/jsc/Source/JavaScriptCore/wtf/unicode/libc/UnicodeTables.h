@@ -44,7 +44,7 @@ struct SpecialProperties {
     uint16_t upperCase[3];
 };
 
-extern SpecialProperties SpecialCasing[1];
+extern SpecialProperties SpecialCasingTable[103];
 
 } }
 

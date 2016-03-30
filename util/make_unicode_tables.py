@@ -147,7 +147,38 @@ with open('SpecialCasing.txt', 'r') as ucdata:
                 'upperCase': upper_case
             })
 
-print max_n
+# print max_n
 
-for s in special_casing:
-    print s
+# for s in special_casing:
+#     print s
+
+# build C array and output it to a header file
+def emit_special_casing_table():
+    emit('SpecialProperties SpecialCasingTable[' + str(len(special_casing)) + '] = {\n')
+    for i, element in enumerate(special_casing):
+        emit('    { 0x' + element['codePoint'] + ', ')
+        emit(str(len(element['lowerCase'])) + ', ')
+        emit(str(len(element['titleCase'])) + ', ')
+        emit(str(len(element['upperCase'])) + ', ')
+        emit('{ ')
+        for j, cp in enumerate(element['lowerCase']):
+            emit('0x' + cp)
+            if j < len(element['lowerCase']) - 1:
+                emit(', ')
+        emit(' }, { ')
+        for j, cp in enumerate(element['titleCase']):
+            emit('0x' + cp)
+            if j < len(element['titleCase']) - 1:
+                emit(', ')
+        emit(' }, { ')
+        for j, cp in enumerate(element['upperCase']):
+            emit('0x' + cp)
+            if j < len(element['upperCase']) - 1:
+                emit(', ')
+        emit(' } }')
+        if i < len(special_casing) - 1:
+            emit(',')
+        emit('\n')
+    emit('};\n')
+
+emit_special_casing_table()
