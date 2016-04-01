@@ -31,12 +31,11 @@ class SpecialCasingField():
     UpperCase = 3
     ConditionList = 4
 
-code_point_count = 0
-upper_case_count = 0
-lower_case_count = 0
-
 upper_table = {}
 lower_table = {}
+
+surrogate_upper_table = {}
+surrogate_lower_table = {}
 
 # =============================================================================
 # Unicode Data
@@ -49,8 +48,6 @@ with open('UnicodeData.txt', 'r') as ucdata:
     for line in ucdata:
         props = line.split(';')
 
-        code_point_count += 1
-
         value = int(props[UnicodeDataField.Value], 16)
 
         # VERIFY: only 16-bit support needed??? That's what Duktape says...
@@ -60,20 +57,22 @@ with open('UnicodeData.txt', 'r') as ucdata:
             low_surrogate = 0xDC00 + (surrogate & 0x3FF)
 
             #print 'Surrogate ' + str(value) + ' =  ' + str(high_surrogate) + ' & ' + str(low_surrogate)
+            if not props[UnicodeDataField.UpperCase] == '':
+                surrogate_upper_table[value] = int(props[UnicodeDataField.UpperCase], 16)
+
+            if not props[UnicodeDataField.LowerCase] == '':
+                surrogate_lower_table[value] = int(props[UnicodeDataField.LowerCase], 16)
 
             continue
 
         if not props[UnicodeDataField.UpperCase] == '':
-            upper_case_count += 1
             upper_table[value] = int(props[UnicodeDataField.UpperCase], 16)
 
         if not props[UnicodeDataField.LowerCase] == '':
-            lower_case_count += 1
             lower_table[value] = int(props[UnicodeDataField.LowerCase], 16)
 
-# print code_point_count
-print upper_case_count
-print lower_case_count
+#print len(upper_table)
+#print len(lower_table)
 
 flat_upper_table = []
 for key in sorted(upper_table.keys()):
@@ -96,7 +95,7 @@ for key in sorted(lower_table.keys()):
 # build C array and output it to a header file
 def emit_upper_table():
     value_count_per_line = 0
-    emit('uint32_t UpperTable[' + str(upper_case_count) + '] = {\n')
+    emit('uint32_t UpperTable[' + str(len(flat_upper_table)) + '] = {\n')
     for i, value in enumerate(flat_upper_table):
         if value_count_per_line == 0:
             emit('    ' + str(value) + 'u')
@@ -104,15 +103,17 @@ def emit_upper_table():
             emit(', ' + str(value) + 'u')
         else:
             emit(', ' + str(value) + 'u')
-            if i < upper_case_count:
+            if i < len(flat_upper_table):
                 emit(',\n')
                 value_count_per_line = 0
             continue
 
         value_count_per_line += 1
-        emit('\n};\n')
+    emit('\n};\n')
 
-#emit_upper_table()
+emit_upper_table()
+#print surrogate_upper_table
+#print surrogate_lower_table
 
 # =============================================================================
 # Special Casing
@@ -181,4 +182,4 @@ def emit_special_casing_table():
         emit('\n')
     emit('};\n')
 
-emit_special_casing_table()
+#emit_special_casing_table()
