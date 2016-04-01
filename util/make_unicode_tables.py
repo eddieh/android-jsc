@@ -4,6 +4,12 @@
 # read from the unicode data and constuct unicode tables
 #
 
+# TODO: surrogates
+# TODO: lower case
+# TODO: title case
+# TODO: conditional
+# TODO: generate C file
+
 import sys
 emit = sys.stdout.write
 
