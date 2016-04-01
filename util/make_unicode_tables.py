@@ -50,13 +50,13 @@ with open('UnicodeData.txt', 'r') as ucdata:
 
         value = int(props[UnicodeDataField.Value], 16)
 
-        # VERIFY: only 16-bit support needed??? That's what Duktape says...
         if value >= 0x10000:
             surrogate = value - 0x10000
             high_surrogate = 0xD800 + (surrogate >> 10)
             low_surrogate = 0xDC00 + (surrogate & 0x3FF)
 
             #print 'Surrogate ' + str(value) + ' =  ' + str(high_surrogate) + ' & ' + str(low_surrogate)
+
             if not props[UnicodeDataField.UpperCase] == '':
                 surrogate_upper_table[value] = int(props[UnicodeDataField.UpperCase], 16)
 
