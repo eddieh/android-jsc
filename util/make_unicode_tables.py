@@ -7,7 +7,7 @@
 # TODO: surrogates
 # TODO: lower case
 # TODO: title case
-# TODO: conditional
+# TODO: conditional — hard code?
 # TODO: generate C file
 
 import sys
@@ -117,9 +117,13 @@ def emit_upper_table():
         value_count_per_line += 1
     emit('\n};\n')
 
-emit_upper_table()
+#emit_upper_table()
 #print surrogate_upper_table
 #print surrogate_lower_table
+
+# all surrogate casing is a difference of 40. proof:
+for key in surrogate_upper_table:
+    print str(key) + ' - ' + str(surrogate_upper_table[key]) + ' = ' + str(int(key) - int(surrogate_upper_table[key]))
 
 # =============================================================================
 # Special Casing

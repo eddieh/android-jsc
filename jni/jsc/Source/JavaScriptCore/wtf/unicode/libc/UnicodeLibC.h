@@ -189,6 +189,28 @@ inline SpecialProperties specialCasingRule(UChar c)
     return (SpecialProperties){ 0, 0, 0, 0 };
 }
 
+// Check if ch is high surrogate and ch2 is low surrogate.
+inline bool isSurrogatePair(UChar ch, UChar ch2)
+{
+    if (ch >= 0xD800 && ch <= 0xDBFF)
+        if (ch2 >= 0xDC00 && ch2 <= 0xDFFF)
+            return true;
+
+    return false;
+}
+
+// Convert pair to 32 bit, so we can look it up in surrogate table.
+// ...Since only a few surrogates exist that need casing rules it
+// might be okay, for now to hardcode the casing difference. After
+// conversion the 32 bit character must be converted back to 2 16 bit
+// characters...
+inline UChar32 surrogatePairToUChar32(UChar a, UChar b)
+{
+    UChar32 ch = static_cast<unsigned short>(a);
+    UChar32 ch2 = static_cast<unsigned short>(b);
+    return ((ch - 0xD800) << 10) + (ch2 - 0xDC00) + 0x0010000;
+}
+
 // This is called from stringProtoFuncToUpperCase in
 // runtime/StringPrototype.cpp
 //
