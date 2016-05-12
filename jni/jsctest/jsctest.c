@@ -112,6 +112,7 @@ Java_com_adcolony_jsctest_JSCTest_runTest(JNIEnv *env, jobject self, jbyteArray 
     (*env)->ReleaseByteArrayElements(env, src, (jbyte *)csrc, JNI_ABORT);
 
     evaluateScript(csrc_copy, "test", retValue);
+    free(csrc_copy);
 
     return (*env)->NewStringUTF(env, retValue);
 }
