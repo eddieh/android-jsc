@@ -109,6 +109,7 @@ Java_com_adcolony_jsctest_JSCTest_runTest(JNIEnv *env, jobject self, jbyteArray 
     jsize clen = (*env)->GetArrayLength(env, src);
     char *csrc_copy = (char *)malloc(sizeof(char) * clen + 1);
     (void)strlcpy(csrc_copy, csrc, clen + 1);
+    (*env)->ReleaseByteArrayElements(env, src, (jbyte *)csrc, JNI_ABORT);
 
     evaluateScript(csrc_copy, "test", retValue);
 
