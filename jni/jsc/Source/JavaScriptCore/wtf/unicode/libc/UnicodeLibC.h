@@ -201,9 +201,9 @@ inline bool isSurrogatePair(UChar ch, UChar ch2)
 
 // Convert pair to 32 bit, so we can look it up in surrogate table.
 // ...Since only a few surrogates exist that need casing rules it
-// might be okay, for now to hardcode the casing difference. After
-// conversion the 32 bit character must be converted back to 2 16 bit
-// characters...
+// might be okay, for now, to hardcode the casing difference. After
+// conversion, the 32 bit character must be converted back to two 16
+// bit characters...
 inline UChar32 surrogatePairToUChar32(UChar a, UChar b)
 {
     UChar32 ch = static_cast<unsigned short>(a);
@@ -243,6 +243,7 @@ inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLen
         while (srcIterator < srcEnd) {
             SpecialProperties props = specialCasingRule((UChar)(*srcIterator));
             if (props.codePoint) {
+                // FIXME: this isn't checking for a surrogate...
                 if (*srcIterator < 0x10000) {
                     for (int i = 0; i < props.upperLength; i++)
                         *resultIterator++ = props.upperCase[i];

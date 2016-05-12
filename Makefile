@@ -14,6 +14,9 @@ libs/armeabi/libjsctest.so:
 clean:
 	@rm -r bin gen libs obj ||:
 
+clean-libjsctest:
+	@rm libs/armeabi/libjsctest.so
+
 .PHONY: all
 .PHONY: installd
 .PHONY: build

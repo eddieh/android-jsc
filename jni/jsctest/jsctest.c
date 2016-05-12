@@ -43,6 +43,8 @@
    #define ABI "unknown"
 #endif
 
+void evaluateScript(const char *, const char *, char *);
+
 /* This is a trivial JNI example where we use a native method
  * to return a new VM String. See the corresponding Java source
  * file located at:
@@ -102,12 +104,13 @@ evaluateScript(const char *src, const char *entryFn, char *retStr)
 jstring
 Java_com_adcolony_jsctest_JSCTest_runTest(JNIEnv *env, jobject self, jbyteArray src)
 {
-     char *csrc = (char *)(*env)->GetByteArrayElements(env, src, NULL);
-     jsize clen = (*env)->GetArrayLength(env, src);
-     char retValue[128];
+    char retValue[128];
+    char *csrc = (char *)(*env)->GetByteArrayElements(env, src, NULL);
+    jsize clen = (*env)->GetArrayLength(env, src);
+    char *csrc_copy = (char *)malloc(sizeof(char) * clen + 1);
+    (void)strlcpy(csrc_copy, csrc, clen + 1);
 
-     csrc[clen] = '\0';
-     evaluateScript(csrc, "test", retValue);
+    evaluateScript(csrc_copy, "test", retValue);
 
-     return (*env)->NewStringUTF(env, retValue);
+    return (*env)->NewStringUTF(env, retValue);
 }
