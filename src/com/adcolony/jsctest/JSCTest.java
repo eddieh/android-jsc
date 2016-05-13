@@ -17,20 +17,26 @@ package com.adcolony.jsctest;
 
 import android.app.Activity;
 import android.widget.TextView;
-import android.os.*;
-import android.util.*;
-import java.io.*;
-import java.util.*;
+import android.os.Bundle;
+import android.util.Log;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class JSCTest extends Activity
 {
     byte[] loadAsset(String asset)
     {
+        InputStream instream = null;
+        ByteArrayOutputStream buffer = null;
+
         if (asset == null) return null;
 
         try {
-            InputStream instream = getAssets().open(asset);
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream(instream.available());
+            instream = getAssets().open(asset);
+            buffer = new ByteArrayOutputStream(instream.available());
             for (int ch = instream.read(); ch != -1; ch = instream.read()) {
                 buffer.write(ch);
             }
@@ -39,6 +45,9 @@ public class JSCTest extends Activity
         } catch (IOException err) {
             Log.e("JSCTest", "Asset file not found: " + asset);
             return null;
+        } finally {
+            try { if (instream != null) instream.close(); } catch (IOException e) { /* DGAF */ }
+            try { if (buffer != null) buffer.close(); } catch (IOException e) { /* DGAF */ }
         }
     }
 
@@ -65,9 +74,9 @@ public class JSCTest extends Activity
             Log.e("JSCTest", "Could load list of assets");
             return;
         }
-        
+
         // filter the list
-        List<String> tests = new ArrayList<String>();
+        ArrayList<String> tests = new ArrayList<String>();
         for (String file : assets) {
             if (file.endsWith(".js")) tests.add(file);
         }

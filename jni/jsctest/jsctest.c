@@ -80,17 +80,17 @@ evaluateScript(const char *src, const char *entryFn, char *retStr)
      JSValueRef exception;
 
      JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
-     JSObjectRef jsGlobalObject = JSContextGetGlobalObject(ctx);
+     JSObjectRef global = JSContextGetGlobalObject(ctx);
 
-     JSStringRef scriptJS = JSStringCreateWithUTF8CString(src);
-     //bool validScript = JSCheckScriptSyntax(ctx, scriptJS, NULL, 0, exception);
-     JSValueRef ret = JSEvaluateScript(ctx, scriptJS, NULL, NULL, 0, &exception);
-     JSStringRelease(scriptJS);
+     JSStringRef script = JSStringCreateWithUTF8CString(src);
+     //bool validScript = JSCheckScriptSyntax(ctx, script, NULL, 0, exception);
+     JSValueRef ret = JSEvaluateScript(ctx, script, NULL, NULL, 0, &exception);
+     JSStringRelease(script);
 
-     JSStringRef nameJS = JSStringCreateWithUTF8CString(entryFn);
-     //bool hasMain = JSObjectHasProperty(ctx, jsGlobalObject, nameJS);
-     JSObjectRef function = (JSObjectRef)JSObjectGetProperty(ctx, jsGlobalObject, nameJS, NULL);
-     JSStringRelease(nameJS);
+     JSStringRef entryFnName = JSStringCreateWithUTF8CString(entryFn);
+     //bool hasMain = JSObjectHasProperty(ctx, global, entryFnName);
+     JSObjectRef function = (JSObjectRef)JSObjectGetProperty(ctx, global, entryFnName, NULL);
+     JSStringRelease(entryFnName);
 
      JSValueRef args[] = {};
      JSValueRef result = JSObjectCallAsFunction(ctx, function, NULL, 0, args, &exception);
