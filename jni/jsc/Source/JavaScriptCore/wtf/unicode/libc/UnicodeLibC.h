@@ -27,6 +27,11 @@
 #ifndef WTF_UnicodeLibC_h
 #define WTF_UnicodeLibC_h
 
+#include <android/log.h>
+
+#define APPTAG "ULIBC"
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, APPTAG, __VA_ARGS__)
+
 #include "UnicodeMacrosFromICU.h"
 #include "UnicodeTables.h"
 
@@ -191,7 +196,12 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
     if (resultIterator < resultEnd)
         *resultIterator = 0;
 
-    return (resultIterator - result - 1) + remainingCharacters;
+    // LOGE(">>> resultIterator = %u", (uint)resultIterator);
+    // LOGE(">>> result = %u", (uint)result);
+    // LOGE(">>> remainingCharacters = %d", remainingCharacters);
+    // LOGE(">>> return = %d", (resultIterator - result - 1) + remainingCharacters);
+
+    return (resultIterator - result) + remainingCharacters;
 }
 
 inline UChar32 toLower(UChar32 c)
@@ -203,11 +213,6 @@ inline UChar32 toUpper(UChar32 c)
 {
     return towupper(c);
 }
-
-#include <android/log.h>
-
-#define APPTAG "ULIBC"
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, APPTAG, __VA_ARGS__)
 
 inline UChar convertToUpper(UChar c)
 {
