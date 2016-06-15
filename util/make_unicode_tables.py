@@ -100,17 +100,17 @@ for key in sorted(lower_table.keys()):
     flat_lower_table.append(packed)
 
 # build C array and output it to a header file
-def emit_upper_table():
+def emit_casing_table(name, table):
     value_count_per_line = 0
-    emit('uint32_t UpperTable[' + str(len(flat_upper_table)) + '] = {\n')
-    for i, value in enumerate(flat_upper_table):
+    emit('uint32_t ' + name + '[' + str(len(table)) + '] = {\n')
+    for i, value in enumerate(table):
         if value_count_per_line == 0:
             emit('    ' + str(value) + 'u')
         elif value_count_per_line < 5:
             emit(', ' + str(value) + 'u')
         else:
             emit(', ' + str(value) + 'u')
-            if i < len(flat_upper_table):
+            if i < len(table):
                 emit(',\n')
                 value_count_per_line = 0
             continue
@@ -118,13 +118,15 @@ def emit_upper_table():
         value_count_per_line += 1
     emit('\n};\n')
 
-#emit_upper_table()
+#emit_casing_table('UpperTable', flat_upper_table)
+#emit_casing_table('LowerTable', flat_lower_table)
+
 #print surrogate_upper_table
 #print surrogate_lower_table
 
 # all surrogate casing is a difference of 40. proof:
-for key in surrogate_upper_table:
-    print str(key) + ' - ' + str(surrogate_upper_table[key]) + ' = ' + str(int(key) - int(surrogate_upper_table[key]))
+# for key in surrogate_upper_table:
+#     print str(key) + ' - ' + str(surrogate_upper_table[key]) + ' = ' + str(int(key) - int(surrogate_upper_table[key]))
 
 # =============================================================================
 # Special Casing

@@ -25,6 +25,17 @@ $ make build
 ```
 
 
+## Approach
+
+JavaScriptCore traditionally uses ICU for Unicode support. ICU is huge
+and dominates the size of the JavaScriptCore binary. By not including
+ICU we can gain a significant size reduction, but we must at the very
+least provide some dummy functionality for Unicode.
+
+Eventually we will have full Unicode support as required by the
+ECMAScript specification.
+
+
 ## Copyright and License
 
 JavaScriptCore is licensed under the LGPL. The build scripts are

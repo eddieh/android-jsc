@@ -145,7 +145,7 @@ inline SpecialProperties specialCasingRule(UChar c)
 
 inline UChar convertToLower(UChar c)
 {
-    for (int i = 0; i < 865; i++)
+    for (int i = 0; i < 856; i++)
         if (c == (LowerTable[i] >> 16))
             return LowerTable[i] & 0x0000FFFF;
 

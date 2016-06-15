@@ -25,7 +25,7 @@ namespace WTF {
 namespace Unicode {
 
 extern uint32_t UpperTable[865];
-extern uint32_t LowerTable[0];
+extern uint32_t LowerTable[856];
 
 struct SpecialProperties {
     uint16_t codePoint;
