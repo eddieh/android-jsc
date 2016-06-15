@@ -56,7 +56,8 @@ with open('UnicodeData.txt', 'r') as ucdata:
 
         value = int(props[UnicodeDataField.Value], 16)
 
-        if value >= 0x10000:
+        # assert(0x10000 <= character && character <= 0x10FFF);
+        if value >= 0x10000 and value <= 0x10FFF:
             surrogate = value - 0x10000
             high_surrogate = 0xD800 + (surrogate >> 10)
             low_surrogate = 0xDC00 + (surrogate & 0x3FF)

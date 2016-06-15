@@ -174,6 +174,9 @@ uint32_t UpperTable[865] = {
     4284153658u
 };
 
+uint32_t LowerTable[0] = {
+};
+
 SpecialProperties SpecialCasingTable[103] = {
     { 0x00DF, 1, 2, 2, { 0x00DF }, { 0x0053, 0x0073 }, { 0x0053, 0x0053 } },
     { 0x0130, 2, 1, 1, { 0x0069, 0x0307 }, { 0x0130 }, { 0x0130 } },

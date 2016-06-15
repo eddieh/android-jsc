@@ -89,12 +89,13 @@ evaluateScript(const char *src, const char *entryFn, char *retStr)
 
      JSStringRef entryFnName = JSStringCreateWithUTF8CString(entryFn);
      //bool hasMain = JSObjectHasProperty(ctx, global, entryFnName);
-     JSObjectRef function = (JSObjectRef)JSObjectGetProperty(ctx, global, entryFnName, NULL);
+     JSObjectRef function = (JSObjectRef)JSObjectGetProperty(ctx, global, entryFnName, &exception);
      JSStringRelease(entryFnName);
 
      JSValueRef args[] = {};
      JSValueRef result = JSObjectCallAsFunction(ctx, function, NULL, 0, args, &exception);
-     JSStringRef resultStr = JSValueToStringCopy(ctx, result, NULL);
+
+     JSStringRef resultStr = JSValueToStringCopy(ctx, result, &exception);
      JSStringGetUTF8CString(resultStr, retStr, 128);
      JSStringRelease(resultStr);
 

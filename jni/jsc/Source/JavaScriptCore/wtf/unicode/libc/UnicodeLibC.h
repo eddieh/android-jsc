@@ -22,6 +22,8 @@
  *
  */
 
+// TODO: pass these tests - /icu-56.1/source/test/testdata/casing.txt
+
 #ifndef WTF_UnicodeLibC_h
 #define WTF_UnicodeLibC_h
 
@@ -132,6 +134,24 @@ inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLe
     return srcLength;
 }
 
+inline SpecialProperties specialCasingRule(UChar c)
+{
+    for (int i = 0; i < 1; i++)
+        if (c == SpecialCasingTable[i].codePoint)
+            return SpecialCasingTable[i];
+
+    return (SpecialProperties){ 0, 0, 0, 0 };
+}
+
+inline UChar convertToLower(UChar c)
+{
+    for (int i = 0; i < 865; i++)
+        if (c == (LowerTable[i] >> 16))
+            return LowerTable[i] & 0x0000FFFF;
+
+    return c;
+}
+
 inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
     const UChar* srcIterator = src;
@@ -141,19 +161,37 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
 
     int remainingCharacters = 0;
     if (srcLength <= resultLength)
-        while (srcIterator < srcEnd)
-            *resultIterator++ = towlower(*srcIterator++);
+        while (srcIterator < srcEnd) {
+            SpecialProperties props = specialCasingRule((UChar)(*srcIterator));
+            if (props.codePoint) {
+                if (*srcIterator < 0x10000) {
+                    for (int i = 0; i < props.lowerLength; i++)
+                        *resultIterator++ = props.lowerCase[i];
+
+                    if (srcLength == resultLength)
+                        remainingCharacters += props.lowerLength - 1;
+
+                    *srcIterator++;
+                } else {
+                    // surrogate?
+                    *srcIterator++;
+                }
+            } else
+                *resultIterator++ = convertToLower(*srcIterator++);
+        }
     else
         while (resultIterator < resultEnd)
-            *resultIterator++ = towlower(*srcIterator++);
+            *resultIterator++ = convertToLower(*srcIterator++);
 
     if (srcIterator < srcEnd)
         remainingCharacters += srcEnd - srcIterator;
+
     *error = !!remainingCharacters;
+
     if (resultIterator < resultEnd)
         *resultIterator = 0;
 
-    return (resultIterator - result) + remainingCharacters;
+    return (resultIterator - result - 1) + remainingCharacters;
 }
 
 inline UChar32 toLower(UChar32 c)
@@ -178,15 +216,6 @@ inline UChar convertToUpper(UChar c)
             return UpperTable[i] & 0x0000FFFF;
 
     return c;
-}
-
-inline SpecialProperties specialCasingRule(UChar c)
-{
-    for (int i = 0; i < 1; i++)
-        if (c == SpecialCasingTable[i].codePoint)
-            return SpecialCasingTable[i];
-
-    return (SpecialProperties){ 0, 0, 0, 0 };
 }
 
 // Check if ch is high surrogate and ch2 is low surrogate.
