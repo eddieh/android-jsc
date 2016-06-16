@@ -199,7 +199,7 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
     // LOGE(">>> resultIterator = %u", (uint)resultIterator);
     // LOGE(">>> result = %u", (uint)result);
     // LOGE(">>> remainingCharacters = %d", remainingCharacters);
-    // LOGE(">>> return = %d", (resultIterator - result - 1) + remainingCharacters);
+    // LOGE(">>> return = %d", (resultIterator - result) + remainingCharacters);
 
     return (resultIterator - result) + remainingCharacters;
 }
