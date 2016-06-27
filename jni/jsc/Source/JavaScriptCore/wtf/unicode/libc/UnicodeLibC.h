@@ -27,17 +27,16 @@
 #ifndef WTF_UnicodeLibC_h
 #define WTF_UnicodeLibC_h
 
-#include <android/log.h>
-
-#define APPTAG "ULIBC"
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, APPTAG, __VA_ARGS__)
-
 #include "UnicodeMacrosFromICU.h"
 #include "UnicodeTables.h"
 
-#include <wtf/ASCIICType.h>
+#include <android/log.h>
 #include <assert.h>
 #include <wctype.h>
+#include <wtf/ASCIICType.h>
+
+#define APPTAG "ULIBC"
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, APPTAG, __VA_ARGS__)
 
 typedef uint16_t UChar;
 typedef int32_t UChar32;
@@ -145,7 +144,7 @@ inline SpecialProperties specialCasingRule(UChar c)
         if (c == SpecialCasingTable[i].codePoint)
             return SpecialCasingTable[i];
 
-    return (SpecialProperties){ 0, 0, 0, 0 };
+    return (SpecialProperties) { 0, 0, 0, 0 };
 }
 
 inline UChar convertToLower(UChar c)
@@ -162,46 +161,37 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
     const UChar* srcIterator = src;
     const UChar* srcEnd = src + srcLength;
     UChar* resultIterator = result;
-    UChar* resultEnd = result + resultLength;
+    int rindex = 0;
 
     int remainingCharacters = 0;
-    if (srcLength <= resultLength)
-        while (srcIterator < srcEnd) {
-            SpecialProperties props = specialCasingRule((UChar)(*srcIterator));
-            if (props.codePoint) {
-                if (*srcIterator < 0x10000) {
-                    for (int i = 0; i < props.lowerLength; i++)
-                        *resultIterator++ = props.lowerCase[i];
-
-                    if (srcLength == resultLength)
-                        remainingCharacters += props.lowerLength - 1;
-
-                    *srcIterator++;
-                } else {
-                    // surrogate?
-                    *srcIterator++;
+    while (srcIterator <= srcEnd && rindex < resultLength) {
+        SpecialProperties props = specialCasingRule(*srcIterator);
+        if (props.codePoint) {
+            if (*srcIterator < 0x10000) {
+                for (int i = 0; i < props.lowerLength; i++) {
+                    if (rindex >= resultLength) {
+                        remainingCharacters += props.lowerLength - i + 1;
+                        break;
+                    }
+                    resultIterator[rindex++] = props.lowerCase[i];
                 }
-            } else
-                *resultIterator++ = convertToLower(*srcIterator++);
-        }
-    else
-        while (resultIterator < resultEnd)
-            *resultIterator++ = convertToLower(*srcIterator++);
+            }
+        } else
+            resultIterator[rindex++] = convertToLower(*srcIterator);
+
+        srcIterator++;
+    }
+
 
     if (srcIterator < srcEnd)
         remainingCharacters += srcEnd - srcIterator;
 
     *error = !!remainingCharacters;
 
-    if (resultIterator < resultEnd)
-        *resultIterator = 0;
+    if (rindex < resultLength)
+        resultIterator[rindex] = 0;
 
-    // LOGE(">>> resultIterator = %u", (uint)resultIterator);
-    // LOGE(">>> result = %u", (uint)result);
-    // LOGE(">>> remainingCharacters = %d", remainingCharacters);
-    // LOGE(">>> return = %d", (resultIterator - result) + remainingCharacters);
-
-    return (resultIterator - result) + remainingCharacters;
+    return rindex + remainingCharacters;
 }
 
 inline UChar32 toLower(UChar32 c)
@@ -280,9 +270,9 @@ inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLen
                     resultIterator[rindex++] = props.upperCase[i];
                 }
             }
-        } else {
+        } else
             resultIterator[rindex++] = convertToUpper(*srcIterator);
-        }
+
         srcIterator++;
     }
 
