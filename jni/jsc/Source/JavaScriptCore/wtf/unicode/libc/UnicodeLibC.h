@@ -141,7 +141,7 @@ inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLe
 
 inline SpecialProperties specialCasingRule(UChar c)
 {
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 103; i++)
         if (c == SpecialCasingTable[i].codePoint)
             return SpecialCasingTable[i];
 
@@ -262,61 +262,39 @@ inline UChar32 surrogatePairToUChar32(UChar a, UChar b)
 // conversions.
 inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
-    // for (int i = 0; i < srcLength; i++)
-    //     LOGE("src: %d", src[i]);
-
-    // LOGE("slen: %d", srcLength);
-
     const UChar* srcIterator = src;
     const UChar* srcEnd = src + srcLength;
     UChar* resultIterator = result;
-    UChar* resultEnd = result + resultLength;
+    int rindex = 0;
 
     int remainingCharacters = 0;
-    if (srcLength <= resultLength)
-        while (srcIterator < srcEnd) {
-            SpecialProperties props = specialCasingRule((UChar)(*srcIterator));
-            if (props.codePoint) {
-                // FIXME: this isn't checking for a surrogate...
-                if (*srcIterator < 0x10000) {
-                    for (int i = 0; i < props.upperLength; i++)
-                        *resultIterator++ = props.upperCase[i];
-
-                    if (srcLength == resultLength)
-                        remainingCharacters += props.upperLength - 1;
-
-                    *srcIterator++;
-                } else {
-                    // surrogate
-                    // perform mapping on *(srcIterator - 1) and *srcIterator
-                    *srcIterator++;
+    while (srcIterator <= srcEnd && rindex < resultLength) {
+        SpecialProperties props = specialCasingRule(*srcIterator);
+        if (props.codePoint) {
+            if (*srcIterator < 0x10000) {
+                for (int i = 0; i < props.upperLength; i++) {
+                    if (rindex >= resultLength) {
+                        remainingCharacters += props.upperLength - i + 1;
+                        break;
+                    }
+                    resultIterator[rindex++] = props.upperCase[i];
                 }
-            } else
-                *resultIterator++ = convertToUpper(*srcIterator++);
+            }
+        } else {
+            resultIterator[rindex++] = convertToUpper(*srcIterator);
         }
-    else
-        while (resultIterator < resultEnd)
-            *resultIterator++ = convertToUpper(*srcIterator++);
-
-    // for (int i = 0; i < resultLength; i++)
-    //     LOGE("result: %d", result[i]);
-
-    // LOGE("rlen: %d", resultLength);
+        srcIterator++;
+    }
 
     if (srcIterator < srcEnd)
         remainingCharacters += srcEnd - srcIterator;
 
     *error = !!remainingCharacters;
 
-    if (resultIterator < resultEnd)
-        *resultIterator = 0;
+    if (rindex < resultLength)
+        resultIterator[rindex] = 0;
 
-    // LOGE(">>> resultIterator = %u", (uint)resultIterator);
-    // LOGE(">>> result = %u", (uint)result);
-    // LOGE(">>> remainingCharacters = %d", remainingCharacters);
-    // LOGE(">>> return = %d", (resultIterator - result - 1) + remainingCharacters);
-
-    return (resultIterator - result - 1) + remainingCharacters;
+    return rindex + remainingCharacters;
 }
 
 inline UChar32 toTitleCase(UChar32 c)
