@@ -426,6 +426,56 @@ SpecialProperties SpecialCasingTable[103] = {
     { 0x1FF7, 1, 3, 3, { 0x1FF7 }, { 0x03A9, 0x0342, 0x0345 }, { 0x03A9, 0x0342, 0x0399 } }
 };
 
+SpecialProperties specialCasingRule(UChar c)
+{
+    for (int i = 0; i < 103; i++)
+        if (c == SpecialCasingTable[i].codePoint)
+            return SpecialCasingTable[i];
+
+    return (SpecialProperties) { 0, 0, 0, 0 };
+}
+
+UChar convertToLower(UChar c)
+{
+    for (int i = 0; i < 856; i++)
+        if (c == (LowerTable[i] >> 16))
+            return LowerTable[i] & 0x0000FFFF;
+
+    return c;
+}
+
+UChar convertToUpper(UChar c)
+{
+    for (int i = 0; i < 865; i++)
+        if (c == (UpperTable[i] >> 16))
+            return UpperTable[i] & 0x0000FFFF;
+
+    return c;
+}
+
+// Check if ch is high surrogate and ch2 is low surrogate.
+bool isSurrogatePair(UChar ch, UChar ch2)
+{
+    if (ch >= 0xD800 && ch <= 0xDBFF)
+        if (ch2 >= 0xDC00 && ch2 <= 0xDFFF)
+            return true;
+
+    return false;
+}
+
+// Convert pair to 32 bit, so we can look it up in surrogate table.
+// ...Since only a few surrogates exist that need casing rules it
+// might be okay, for now, to hardcode the casing difference. After
+// conversion, the 32 bit character must be converted back to two 16
+// bit characters...
+UChar32 surrogatePairToUChar32(UChar a, UChar b)
+{
+    UChar32 ch = static_cast<unsigned short>(a);
+    UChar32 ch2 = static_cast<unsigned short>(b);
+    return ((ch - 0xD800) << 10) + (ch2 - 0xDC00) + 0x0010000;
+}
+
+
 } }
 
 #endif

@@ -599,8 +599,25 @@
 
 #endif  /* OS(WINCE) && !PLATFORM(QT) */
 
+
+/* ==== Unicode options: specific to this android-jsc variant ==== */
+
 /* The only Unicode backend we support is libc */
-#define WTF_USE_LIBC_UNICODE 1
+#define WTF_USE_LIBC_UNICODE 1  // defaults is 1 (use Unicode
+                                // implementation that depends on only
+                                // libc)
+
+/* Unicode tables for casing rules */
+#define ENABLE_UNICODE_TABLES 1  // default is 1 (enable built-in
+                                 // Unicode tables, disabling this
+                                 // option saves space at the expense
+                                 // of not supporting casing rules
+                                 // beyond ASCII basic Latin)
+
+#if defined(ENABLE_UNICODE_TABLES) && !defined(WTF_USE_LIBC_UNICODE)
+#  error "Unicode tables can only be used with libc based Unicode support."
+#endif
+
 
 #if PLATFORM(MAC) && !PLATFORM(IOS)
 #if !defined(BUILDING_ON_LEOPARD) && !defined(BUILDING_ON_TIGER) && CPU(X86_64)

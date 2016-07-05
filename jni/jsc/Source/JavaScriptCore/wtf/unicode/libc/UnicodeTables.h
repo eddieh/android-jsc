@@ -21,6 +21,9 @@
 #ifndef WTF_UnicodeTables_h
 #define WTF_UnicodeTables_h
 
+typedef uint16_t UChar;
+typedef int32_t UChar32;
+
 namespace WTF {
 namespace Unicode {
 
@@ -38,6 +41,12 @@ struct SpecialProperties {
 };
 
 extern SpecialProperties SpecialCasingTable[103];
+
+SpecialProperties specialCasingRule(UChar c);
+UChar convertToLower(UChar c);
+UChar convertToUpper(UChar c);
+bool isSurrogatePair(UChar ch, UChar ch2);
+UChar32 surrogatePairToUChar32(UChar a, UChar b);
 
 } }
 

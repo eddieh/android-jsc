@@ -28,7 +28,12 @@
 #define WTF_UnicodeLibC_h
 
 #include "UnicodeMacrosFromICU.h"
+#ifdef ENABLE_UNICODE_TABLES
 #include "UnicodeTables.h"
+#else
+typedef uint16_t UChar;
+typedef int32_t UChar32;
+#endif
 
 #include <android/log.h>
 #include <assert.h>
@@ -37,9 +42,6 @@
 
 #define APPTAG "ULIBC"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, APPTAG, __VA_ARGS__)
-
-typedef uint16_t UChar;
-typedef int32_t UChar32;
 
 namespace WTF {
 namespace Unicode {
@@ -138,24 +140,6 @@ inline int foldCase(UChar* result, int resultLength, const UChar* src, int srcLe
     return srcLength;
 }
 
-inline SpecialProperties specialCasingRule(UChar c)
-{
-    for (int i = 0; i < 103; i++)
-        if (c == SpecialCasingTable[i].codePoint)
-            return SpecialCasingTable[i];
-
-    return (SpecialProperties) { 0, 0, 0, 0 };
-}
-
-inline UChar convertToLower(UChar c)
-{
-    for (int i = 0; i < 856; i++)
-        if (c == (LowerTable[i] >> 16))
-            return LowerTable[i] & 0x0000FFFF;
-
-    return c;
-}
-
 inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLength, bool* error)
 {
     const UChar* srcIterator = src;
@@ -164,6 +148,7 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
     int rindex = 0;
 
     int remainingCharacters = 0;
+#ifdef ENABLE_UNICODE_TABLES
     while (srcIterator <= srcEnd && rindex < resultLength) {
         SpecialProperties props = specialCasingRule(*srcIterator);
         if (props.codePoint) {
@@ -190,6 +175,11 @@ inline int toLower(UChar* result, int resultLength, const UChar* src, int srcLen
 
     if (rindex < resultLength)
         resultIterator[rindex] = 0;
+#else
+    *error = false;
+    while (srcIterator <= srcEnd)
+        resultIterator[rindex++] = *srcIterator++;
+#endif
 
     return rindex + remainingCharacters;
 }
@@ -202,37 +192,6 @@ inline UChar32 toLower(UChar32 c)
 inline UChar32 toUpper(UChar32 c)
 {
     return towupper(c);
-}
-
-inline UChar convertToUpper(UChar c)
-{
-    for (int i = 0; i < 865; i++)
-        if (c == (UpperTable[i] >> 16))
-            return UpperTable[i] & 0x0000FFFF;
-
-    return c;
-}
-
-// Check if ch is high surrogate and ch2 is low surrogate.
-inline bool isSurrogatePair(UChar ch, UChar ch2)
-{
-    if (ch >= 0xD800 && ch <= 0xDBFF)
-        if (ch2 >= 0xDC00 && ch2 <= 0xDFFF)
-            return true;
-
-    return false;
-}
-
-// Convert pair to 32 bit, so we can look it up in surrogate table.
-// ...Since only a few surrogates exist that need casing rules it
-// might be okay, for now, to hardcode the casing difference. After
-// conversion, the 32 bit character must be converted back to two 16
-// bit characters...
-inline UChar32 surrogatePairToUChar32(UChar a, UChar b)
-{
-    UChar32 ch = static_cast<unsigned short>(a);
-    UChar32 ch2 = static_cast<unsigned short>(b);
-    return ((ch - 0xD800) << 10) + (ch2 - 0xDC00) + 0x0010000;
 }
 
 // This is called from stringProtoFuncToUpperCase in
@@ -258,6 +217,7 @@ inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLen
     int rindex = 0;
 
     int remainingCharacters = 0;
+#ifdef ENABLE_UNICODE_TABLES
     while (srcIterator <= srcEnd && rindex < resultLength) {
         SpecialProperties props = specialCasingRule(*srcIterator);
         if (props.codePoint) {
@@ -283,6 +243,11 @@ inline int toUpper(UChar* result, int resultLength, const UChar* src, int srcLen
 
     if (rindex < resultLength)
         resultIterator[rindex] = 0;
+#else
+    *error = false;
+    while (srcIterator <= srcEnd)
+        resultIterator[rindex++] = *srcIterator++;
+#endif
 
     return rindex + remainingCharacters;
 }
